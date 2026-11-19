@@ -51,7 +51,8 @@ def adapter():
 
 def run_executor(*args: str, mirror: "C.CadScenario") -> list[str] | None:
     """The lines runtime/executor/run-executor.sh prints (it never runs docker) for the pinned image and the test
-    layout's area and Python tree, their host prefixes replaced by the scenario's mirror; None without the script."""
+    layout's area and Python tree, their host prefixes replaced by the scenario's mirror and the image's uid 1000 by the
+    user the test requests run as; None without the script."""
     import subprocess
     script = C.REPO / "runtime" / "executor" / "run-executor.sh"      # this repository's printer
     if not script.is_file():
@@ -68,6 +69,7 @@ def run_executor(*args: str, mirror: "C.CadScenario") -> list[str] | None:
         line = line.replace(f"-v {C.PYTHON_TREE}:", f"-v {mirror.python_tree}:")
         line = line.replace(f"-v {C.EXECUTOR}:", f"-v {mirror.runtime}/executor:")
         line = line.replace(f"-v {C.AREA6}:", f"-v {mirror.runtime}:")
+        line = line.replace("--user 1000:1000 ", f"--user {C.run_user()} ")
         out.append(line)
     return out
 
@@ -1168,7 +1170,8 @@ class TestSidecarLaunch(CadCase):
         name = f"gatedtrain-cadexec-{record['label']}"
         rt, py = self.sc.runtime, self.sc.python_tree
         want_side = " ".join([
-            "docker --context gatedtrain run -d --name", name, "--rm --network none --user 1000:1000 --cap-drop ALL",
+            "docker --context gatedtrain run -d --name", name,
+            f"--rm --network none --user {C.run_user()} --cap-drop ALL",
             "--security-opt no-new-privileges --read-only --tmpfs /tmp:rw,nosuid,nodev,noexec,size=4g --cpus 8",
             "--memory 8g --memory-swap 8g --pids-limit 256 --ulimit nofile=1024:1024 --ulimit core=0",
             "-e HOME=/tmp -e PYTHONDONTWRITEBYTECODE=1 -e PYTHONUNBUFFERED=1",
@@ -1178,7 +1181,7 @@ class TestSidecarLaunch(CadCase):
         env = " ".join(f"-e {k}={v}" for k, v in sorted(C.TRAIN_ENV.items()))
         want_trainer = " ".join([
             "GATEDTRAIN_GPU_CAP_H=1000 GATEDTRAIN_GPU_USED_H=3.12 GATEDTRAIN_GPU_STEP_EST_H=0.11", f"{self.sc.host_work}/bin/gpu-step.sh",
-            record["label"], "--rm --runtime=nvidia --gpus all --network none --user 1000:1000 --cap-drop ALL",
+            record["label"], f"--rm --runtime=nvidia --gpus all --network none --user {C.run_user()} --cap-drop ALL",
             "--security-opt no-new-privileges --shm-size=16g --ulimit memlock=-1 --ulimit nofile=65535:65535",
             "-w /opt/nemo-rl", env, f"-v {rt}:{C.AREA6}:ro -v {self.sc.sft_cut}:/inputs/sft-cut:ro",
             f"-v {out}:/out:rw -v {spool}:/spool:rw --tmpfs /tmp:rw,exec,nosuid,nodev,size=8g", C.NEMO_RL_IMAGE,
@@ -1292,7 +1295,8 @@ class TestSidecarLaunch(CadCase):
         self.refused_launch("/spool", side=moved)
 
     def test_user_differs(self):
-        self.refused_launch("user", field="--request.sidecar.user", side=lambda r: r["sidecar"].update(user="1001:1001"))
+        self.refused_launch("user", field="--request.sidecar.user",
+                            side=lambda r: r["sidecar"].update(user=C.other_user()))
 
     def test_sidecar_env(self):
         self.refused_launch("credential", field="--request.sidecar.env",
@@ -1718,7 +1722,7 @@ class TestExecutorSteps(CadCase):
         self.assertEqual(record["script_path"], f"{C.EXECUTOR}/cad_sandbox.py")
         line = proc.stdout.strip()
         want = " ".join([
-            "--rm --network none --user 1000:1000 --cap-drop ALL --security-opt no-new-privileges --read-only",
+            f"--rm --network none --user {C.run_user()} --cap-drop ALL --security-opt no-new-privileges --read-only",
             "--tmpfs /tmp:rw,nosuid,nodev,noexec,size=4g --cpus 8 --memory 8g --memory-swap 8g --pids-limit 256",
             "--ulimit nofile=1024:1024 --ulimit core=0 -e HOME=/tmp -e PYTHONDONTWRITEBYTECODE=1 -e PYTHONUNBUFFERED=1",
             f"-v {self.sc.python_tree}:{C.PYTHON_TREE}:ro -v {self.sc.runtime}/executor:{C.EXECUTOR}:ro",
@@ -1736,7 +1740,7 @@ class TestExecutorSteps(CadCase):
         self.assertEqual(proc.returncode, EXIT_OK, describe(proc))
         record = json.loads(rec.read_text())
         want = " ".join([
-            "--rm --network none --user 1000:1000 --cap-drop ALL --security-opt no-new-privileges --read-only",
+            f"--rm --network none --user {C.run_user()} --cap-drop ALL --security-opt no-new-privileges --read-only",
             "--tmpfs /tmp:rw,nosuid,nodev,noexec,size=4g --cpus 8 --memory 8g --memory-swap 8g --pids-limit 256",
             "--ulimit nofile=1024:1024 --ulimit core=0 -e HOME=/tmp -e PYTHONDONTWRITEBYTECODE=1 -e PYTHONUNBUFFERED=1",
             f"-v {self.sc.python_tree}:{C.PYTHON_TREE}:ro -v {self.sc.runtime}:{C.AREA6}:ro -v {gen}:/inputs/gen:ro",

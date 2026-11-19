@@ -38,11 +38,13 @@ import atexit
 import hashlib
 import json
 import os
+import pwd
 import re
 import shutil
 import struct
 import sys
 import tempfile
+import unittest
 from pathlib import Path
 from typing import Any, Callable
 
@@ -135,6 +137,23 @@ SCRIPTS = ("run_cad_nemo.py", "ptc_cad_hooks.py", "cad_env.py", "executor/cad_pr
            "score_cad.py", "executor/cad_sandbox.py", "geom_metrics.py")   # review-11 layout: executor code apart
 _FENCE = re.compile(r"```[ \t]*(?:python|py)?[ \t]*\n(.*?)```", re.DOTALL | re.IGNORECASE)
 _OPEN_FENCE = re.compile(r"```[ \t]*(?:python|py)?[ \t]*\n(.*)\Z", re.DOTALL | re.IGNORECASE)
+
+
+def run_user() -> str:
+    """The container's `<uid>:<gid>` in fixture requests and records: the uid running the tests and its primary group,
+    so the output directories the tests create are owned by the container's uid (EXT-63) whoever runs them. The launch
+    rules refuse root, so a test that needs it skips under uid 0."""
+    uid = os.getuid()
+    if uid == 0:
+        raise unittest.SkipTest("the launch rules refuse a container running as root (uid 0); run the tests as a "
+                                "non-root user")
+    return f"{uid}:{pwd.getpwuid(uid).pw_gid}"
+
+
+def other_user() -> str:
+    """A `<uid>:<gid>` other than run_user()'s, for a sidecar whose user differs from the request's."""
+    uid = os.getuid() + 1
+    return f"{uid}:{uid}"
 
 
 def sha_text(text: str) -> str:
@@ -783,7 +802,7 @@ class CadScenario:
         side = {"runtime": {"kind": "venv_in_container", "image": EXECUTOR_IMAGE,
                             "venv_lock": str(self.runtime / "executor" / "uv.lock")},
                 "argv": list(SIDECAR_ARGV), "mounts": self.sidecar_mounts(spool), "env": dict(SIDECAR_ENV),
-                "network": "none", "user": "1000:1000", "tmpfs": ["/tmp"], "read_only": True, "cap_drop": ["ALL"],
+                "network": "none", "user": run_user(), "tmpfs": ["/tmp"], "read_only": True, "cap_drop": ["ALL"],
                 "security_opt": ["no-new-privileges"], "gpus": False, "limits": dict(SIDECAR_LIMITS)}
         side.update(overrides)
         return side
@@ -807,7 +826,7 @@ class CadScenario:
                "framework": {"name": "nemo_rl", "version": NEMO_RL_COMMIT, "commit": NEMO_RL_COMMIT},
                "training_seed": SFT_SEED if stage == "sft" else GRPO_SEED, "gpus": True,
                "argv": self.argv(stage), "mounts": self.mounts(stage, out), "tmpfs": ["/tmp"], "network": "none",
-               "network_reason": None, "user": "1000:1000", "env_names": list(ENV_NAMES),
+               "network_reason": None, "user": run_user(), "env_names": list(ENV_NAMES),
                "gpu_est_h": 0.1 if stage == "sft" else 0.45, "gpu_used_h": 6.0, "output_dir": str(out),
                "output_root": str(self.output_root),
                "gpu_step_sha256": file_sha256(self.host_work / "bin" / "gpu-step.sh"), "allow_network": False,
@@ -833,7 +852,7 @@ class CadScenario:
                "runtime": {"kind": "container", "image": NEMO_RL_IMAGE},
                "framework": {"name": "nemo_rl", "version": NEMO_RL_COMMIT, "commit": NEMO_RL_COMMIT},
                "training_seed": SFT_SEED if stage == "sft" else GRPO_SEED, "gpus": True, "network": "none",
-               "network_reason": None, "user": "1000:1000", "env": dict(TRAIN_ENV),
+               "network_reason": None, "user": run_user(), "env": dict(TRAIN_ENV),
                "mounts": self.mounts(stage, out, spool=spool), "tmpfs": ["/tmp"], "output_dir": str(out),
                "gpu_est_h": 0.11, "argv": self.argv(stage, "smoke")}
         if stage == "grpo":
@@ -875,7 +894,7 @@ class CadScenario:
                    "env": dict(SIDECAR_ENV)}
         req.update({"area": 6, "label": f"mm-a6-cad-{script[:-3].replace('_', '-')}", "host_work": str(self.host_work),
                     "framework": {"name": "nemo_rl", "version": NEMO_RL_COMMIT, "commit": NEMO_RL_COMMIT},
-                    "training_seed": 0, "network": "none", "network_reason": None, "user": "1000:1000",
+                    "training_seed": 0, "network": "none", "network_reason": None, "user": run_user(),
                     "tmpfs": ["/tmp"], "output_dir": str(out)})
         req.update(overrides)
         return req
