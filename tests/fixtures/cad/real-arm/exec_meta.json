@@ -1,0 +1,43 @@
+{
+ "code_sha256": {
+  "cad_protocol.py": "sha256:0f9d801de4119147762a267b0fd7ab71b2bdd3d254f3a84e661f93462decf9b1",
+  "cad_sandbox.py": "sha256:b5f19863d54ed35177f1479a805179f0338ca6a4186631ba221e8946be77862e"
+ },
+ "files": {
+  "programs/cad-sft-box-0000__s11/result.json": "sha256:983adcb5395fdda1b95a8b67ddc0c19c807a5f2817343e401d53a6936dcef484",
+  "programs/cad-sft-box-0001__s11/result.json": "sha256:118b2c518ef8d4f189a8f5b1e038b4044a6df79a8f0f7e69bc459ba653a74856",
+  "programs/cad-sft-box-0002__s11/result.json": "sha256:fa7f54972f092f47eab371915b33bef18988f280a08fdb6625dadabfc83fbb74",
+  "programs/cad-sft-box-0003__s11/result.json": "sha256:15444da97031443e61397b4deef8d2bbb58744cd3006b9f3e927b0134f86356c",
+  "programs/cad-sft-box-0004__s11/result.json": "sha256:3c672b6991757c928e8242e8079cfb10bc131bc93fd8d1e85249076687a0d939",
+  "programs/cad-sft-cbore_plate-0270__s11/mesh.stl": "sha256:aadc3d430bb4e0eeb27ffbc3896b1388f8027a4d9bb18f2dfb1308c8246d234b",
+  "programs/cad-sft-cbore_plate-0270__s11/result.json": "sha256:7b733e41435b31e85a64a46935078a1cb91adc496eb54152ed94a9ad2122caf2",
+  "programs/cad-sft-cbore_plate-0271__s11/mesh.stl": "sha256:7420728eb3f6162bb56e3e6fea58a16858e98d587ab2c632cb20fb4c9aa46e95",
+  "programs/cad-sft-cbore_plate-0271__s11/result.json": "sha256:c6f387d23be698ef5d58561ad64c823e2567ec98c70ccbf31e8608db07911d11",
+  "programs/cad-sft-cbore_plate-0272__s11/result.json": "sha256:e5c2be9db26bf16f9603401017753854b0b0ceaf827e50d49e4b3d80b24166a8"
+ },
+ "gen_meta_sha256": "sha256:e8dcb1f97d2d4adc7cb33b3cf1142b87e58425c47a02ea42a6085280a2bdd4a6",
+ "ids": [
+  "cad-sft-box-0000__s11",
+  "cad-sft-box-0001__s11",
+  "cad-sft-box-0002__s11",
+  "cad-sft-box-0003__s11",
+  "cad-sft-box-0004__s11",
+  "cad-sft-cbore_plate-0270__s11",
+  "cad-sft-cbore_plate-0271__s11",
+  "cad-sft-cbore_plate-0272__s11"
+ ],
+ "limits": {
+  "as_extra_mb": 2048,
+  "cpu_s": 10,
+  "fsize_mb": 64,
+  "nofile": 64,
+  "wall_s": 15.0
+ },
+ "schema": "ptc_mm.cad_exec",
+ "schema_version": "1.0",
+ "versions": {
+  "cadquery": "2.8.0",
+  "ocp": "7.9.3.1",
+  "python": "3.12.16"
+ }
+}

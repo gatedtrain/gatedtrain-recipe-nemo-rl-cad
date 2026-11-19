@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-tube-0001",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").cylinder(41, 25))",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").cylinder(41, 25))\n```",
+  "score": 0.0,
+  "seed": 11,
+  "status": "syntax_error",
+  "sub_metrics": {
+    "bbox_iou": null,
+    "chamfer": null,
+    "detail": "SyntaxError: unmatched ')' (<generated>, line 3)",
+    "executes": 0,
+    "finish_reason": "stop",
+    "n_new_tokens": 28,
+    "reward": 0.0,
+    "status": "syntax_error",
+    "unbalanced_columns": null,
+    "volume_ratio": null
+  }
+}

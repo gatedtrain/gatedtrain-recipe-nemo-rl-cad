@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-flange-0267",
+  "program": "import cadquery as cq\n\nacross_across = 65\ncircum_diameter = across_across / 0.8660254037844386\nresult = cq.Workplane(\"XY\").circle(cum_diameter).extrude(14, 5)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nacross_across = 65\ncircum_diameter = across_across / 0.8660254037844386\nresult = cq.Workplane(\"XY\").circle(cum_diameter).extrude(14, 5)\n```",
+  "score": 0.0,
+  "seed": 11,
+  "status": "runtime_error",
+  "sub_metrics": {
+    "bbox_iou": null,
+    "chamfer": null,
+    "detail": "NameError: name 'cum_diameter' is not defined",
+    "executes": 0,
+    "finish_reason": "stop",
+    "n_new_tokens": 71,
+    "reward": 0.0,
+    "status": "runtime_error",
+    "unbalanced_columns": null,
+    "volume_ratio": null
+  }
+}

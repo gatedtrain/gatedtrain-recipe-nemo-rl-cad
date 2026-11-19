@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-plate_4holes-0064",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(71, 111, 6).faces(\">Z\").shell(-12)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(71, 111, 6).faces(\">Z\").shell(-12)\n```",
+  "score": 0.9954833984375,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 1.0,
+    "chamfer": 0.008034161276243183,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": 0.0,
+    "n_new_tokens": 40,
+    "reward": 0.9985649367398904,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.9964123418497262
+  }
+}

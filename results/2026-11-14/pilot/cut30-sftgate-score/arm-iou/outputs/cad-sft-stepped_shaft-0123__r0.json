@@ -1,0 +1,21 @@
+{
+  "item": "cad-sft-stepped_shaft-0123",
+  "program": "import cadquery as cq\n\nresult = (\n    cq.Workplane(\"XY\").circle(11.5).extrude(6)\n    .faces(\">Z\").workplane().circle(9.5).extrude(21)\n)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = (\n    cq.Workplane(\"XY\").circle(11.5).extrude(6)\n    .faces(\">Z\").workplane().circle(9.5).extrude(21)\n)\n```",
+  "score": 0.6935977162345807,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 0.6833655807143231,
+    "chamfer": 0.03220674650134646,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": 0.008121982894387139,
+    "n_new_tokens": 54,
+    "reward": 0.8055983175498627,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.8306302131603334
+  }
+}

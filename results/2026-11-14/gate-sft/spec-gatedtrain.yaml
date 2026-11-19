@@ -1,0 +1,33 @@
+# Spec of the gatedtrain 0.3.0 amendment registration-gatedtrain.yaml (version-only); otherwise spec-ptc-hub.yaml.
+# Area "CAD" SFT workflow: NeMo RL SFT of Qwen2.5-Coder-0.5B-Instruct on text-to-CadQuery (ten SFT families), gated
+# on volumetric IoU of 300 held-out items-sft items against the base alone (MULTIMODAL-SPEC row 6; runtime/README.md).
+# prototype, unpromotable.
+# base: models/qwen2.5-coder-0.5b-instruct (revision ea3f2471...); train: data/sft/shards (concatenated into data/sft/train.jsonl, the SFT shard, disjoint from the
+# items by family split and by row); items: the registered set (300). All inside the read-only runtime mount.
+# `gatedtrain run` refuses this spec.
+workflow: mm-a6-cad-sft
+version: 1
+budget: {gpu_hours: 24}
+artifacts:
+  base:         {type: model_checkpoint, uri: "file:<mm-root>/area6-cad/models/qwen2.5-coder-0.5b-instruct@sha256:75326e5d0c238a52ef038a3ff9776b06eaa265ba6cd203332907be144fa68288"}
+  train:        {type: training_dataset, uri: "file:<mm-root>/area6-cad/data/sft/shards@sha256:895c6dc1c37dd44851c7e60d18b505d3e45f6740f810b94fe2f6f30df7cbe543"}
+  items:        {type: item_set, uri: "file:<mm-root>/area6-cad/items-sft@sha256:fcb253d330ae0765a85b220f1dbcf0df403dc81d22f968ec3d74eeda2c88ad67", disjoint_from: [train]}
+  trainer_cfg:  {type: trainer_config, uri: "file:trainer.yaml@sha256:041f088c76b296223ebc61a904c59032f6a5f66eddea16465f00e5e3ba6598d7"}
+  registration: {type: registration, uri: "file:registration-gatedtrain.yaml@sha256:e2fec59732a0acb475c24433bf47c2df8e50b66657365c69e9b1bb737a144e0e"}
+stages:
+  - id: sft
+    uses: sft.nemo_rl@0.1
+    algorithm: sft
+    model_family: llm.qwen2_5_coder@0.1
+    inputs: {model: base, data: train, config: trainer_cfg}
+    outputs: {model: ckpt}
+  - id: quality_gate
+    uses: gate.superiority@1.0
+    evaluator: cad.cadquery_items@0.1
+    sampler: deployment
+    inputs: {model: ckpt, baseline: base, items: items, registration: registration}
+    # mde equals the registration's planning_effect (G-4).
+    test: {metric: iou, alpha: 0.025, power: 0.80, mde: 0.13, cluster_by: item, seeds: 1}
+    on_fail: stop
+    owner: skeleton-demo
+    escalation: [skeleton-demo-lead]

@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-tube-0004",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").cylinder(62, 2.5)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").cylinder(62, 2.5)\n```",
+  "score": 0.0,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 0.1736111111111111,
+    "chamfer": 0.02368904587545666,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.009717580662957429,
+    "n_new_tokens": 29,
+    "reward": 0.35347805788982256,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.21008403361344535
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "item": "cad-sft-cup-0183",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(86, 24, 54).faces(\">Z\").shell(-3)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(86, 24, 54).faces(\">Z\").shell(-3)\n```",
+  "score": 1.0,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 1.0,
+    "chamfer": 0.011817090935479935,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.010698260683001894,
+    "n_new_tokens": 39,
+    "reward": 1.0,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 1.0
+  }
+}

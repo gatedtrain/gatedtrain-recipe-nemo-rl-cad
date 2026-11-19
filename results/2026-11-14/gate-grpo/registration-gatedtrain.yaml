@@ -1,0 +1,95 @@
+# Amendment for the rename to gatedtrain 0.3.0 (05 section 3.7, R17-1/R17-3): version-only. Amends
+# registration-ptc-hub.yaml (sha256:c735bac51bf3...), which stays post hoc; the composite scorer changed
+# since then only by the published name map (score_cad.py writes the schema id gatedtrain.item_eval), shown by
+# rename_proof against the ptc-hub-era scorer files in ../scorer-ptc-hub/.
+# The header of the amended registration-ptc-hub.yaml, kept:
+# Amendment for the rename to ptc-hub 0.2.0 (05 section 3.7), post hoc: the composite scorer (runtime/score_cad.py,
+# geom_metrics.py, executor/cad_sandbox.py, executor/cad_protocol.py) changed after the gate (publication cleanup,
+# the M3 executor hardening, schema id ptc_hub.item_eval), so the deciding evaluator's manifest_hash is the
+# current scorer's and `post_hoc: true` (a PASS is reported INCONCLUSIVE). Amends registration.yaml
+# (sha256:7f4618cc25ef..., the file the gate ran with). The original verdict reproduces with ptc 78eb913
+# and the original files and pins (RESULT.md).
+# Area "CAD" GRPO gate pre-registration: NeMo RL GRPO (CadQuery environment, B18 executor sidecar) from the gated SFT
+# cut (sft-full-2 checkpoint-60) against that SFT cut alone, on the five part families held out from SFT (runtime/
+# README.md "Metric and tier", "Items and power"; MULTIMODAL-SPEC row 6).
+# prototype, unpromotable. Unsigned: no named team has signed it. Values fixed after the smoke run and before the
+# full run started. Deciding T3 metric `iou` (volumetric IoU with the reference solid, numpy
+# line integration over OCCT's tessellation; higher is better; [0, 1]), blocking, construct-aligned in part with the
+# training reward cad_reward_v1 (R15-1, disclosed below); superiority with margin 0; alpha 0.025 one-sided, power 0.8,
+# m = 1; N 300, K 1, eval seed 11. sigma_plan fixed 0.50 = max(1.5 x ucb80(s_pilot), sqrt(2) x ucb80(s_base)) from
+# the smoke (s_pilot 0.0909 = SD of 20 paired differences GRPO smoke cut 5 vs the SFT cut; s_base 0.2956; ucb80 with
+# 19 df: 0.1070, 0.3480; 1.5 x 0.1070 = 0.161, sqrt(2) x 0.3480 = 0.492, rounded up). The area README proposed
+# `internal_pilot`; the skeleton supports only ucb80 and fixed, so the rule of the SFT gate and area 5 is used.
+# Planning effect 0.085: n_required = ceil(((1.95996 + 0.84162) x 0.50 / 0.085)^2) = 272 <= 300 (MDE at N 300:
+# 0.081). Any later change is an amendment: a new registration with `amends` and a new hash in spec.yaml (05:166).
+registration_version: 1
+registration_id: mm-a6-cad-grpo-iou-superiority-v1
+amends: "sha256:c735bac51bf3ca82f17e0e0d3d345377cea7247f1a4f26c9cfd276298bef71ad"
+signed_by: prototype-unsigned
+created_at: "2026-11-18T06:08:45Z"
+post_hoc: true
+workflow: mm-a6-cad-grpo
+gate: quality_gate
+clause:
+  type: superiority
+  metric: iou
+  direction: higher_is_better
+  margin: 0.0
+  alpha: 0.025
+  power: 0.8
+  planning_effect: 0.085
+  sigma_plan: fixed
+  unit: item
+  samples_per_item: 1
+  eval_seeds: [11]
+  interval: cluster_bootstrap
+  blocking: true
+margin_justification: >-
+  Superiority with delta_sup = 0: any held-out gain of mean volumetric IoU over the SFT cut counts. Prototype value,
+  not reviewed by a named team.
+sigma_pilot:
+  sigma: 0.50
+  source: >-
+    GPU smoke (records/area6-cad/grpo-smoke-2 cut 5 with eval-grpo-smoke-*-1; grpo-smoke-4 is the PASS memory smoke):
+    20 registered items, four per held-out family (gen_cad.py --limit 20 --round-robin), seed 11, the deployment
+    sampler (vLLM greedy). Paired differences of iou, GRPO smoke cut 5 (5 steps) minus the SFT cut: mean +0.020, SD
+    0.091; SFT-cut item SD 0.296. sigma_plan = max(1.5 x ucb80(0.091), sqrt(2) x ucb80(0.296)) = 0.492, rounded up to
+    0.50.
+baseline_pilot_mean: 0.793    # SFT cut, 20 smoke items (mode 1.0, share 0.15, at 0 0.05, sd 0.296)
+construct_alignment: >-
+  iou measures agreement of the generated solid with the reference solid, the construct the training reward
+  cad_reward_v1 (OCCT validity, volume ratio and bounding-box IoU) also rewards, with another engine (numpy volume
+  integration over an OCCT triangulation, not OCCT mass properties); both share the CadQuery/OCCT kernel that
+  interprets the program and the valid-solid requirement. The reward is near its ceiling on the SFT cut's rollouts
+  (average 0.84-1.00 in the smoke; 12 of 80 prompt groups had any reward spread) while iou is not (blind hole earns
+  reward 0.97 with a far lower iou in the CPU pilot), so the reward pays partly for what iou does not. A pass shows that
+  the generated solids agree better with the references on the held-out families under an independent engine, not a
+  general gain in CAD skill; `valid` (T0, supporting) and iou given `executes` are reported beside it.
+eval_distribution:
+  item_set_hash: "sha256:c8ac5d64cf605c0ad0d2616d2cafcb142aafaffa8794e0b733bbb53f62e3d7f2"   # manifest of runtime/items-grpo/
+# The deployment sampler (every cut's sampler.json plus the backend and the shared prompt block; gen_cad.py).
+sampler: {"backend": "vllm", "chat_template": "checkpoint tokenizer_config chat template, add_generation_prompt=True, enable_thinking=False", "max_new_tokens": 512, "messages": "[{role: user, content: cad_protocol.user_prompt(description)}]", "prompt_block_sha256": "sha256:b9aea19b65e447006db92eb9e868357f519a37455d59169a778075c18ffd7e69", "samples_per_seed": 1, "strategy": "greedy", "temperature": 0.0, "top_p": 1.0}
+evaluators:
+  - id: cad.cadquery_items@0.1
+    # EXT-6: SHA-256 of the canonical JSON {evaluator, metric, direction, scorer}; scorer volumetric_iou_vertical_lines
+    # with code_sha256 = the composite scorer hash (sha256:6f44fcf81876...; ptc-hub 0.2.0: sha256:989506df861f...;
+    # the gate ran sha256:c5b19935...).
+    manifest_hash: "sha256:b60b904db58cf3a953f57401fab65827cb795d2aadaa8071d2a44da26828d6d7"
+multiplicity:
+  plan: single_gate
+  family: null
+analysis_code_version: gatedtrain 0.3.0
+bootstrap:
+  replicates: 10000
+  seed: 20261114
+pairing:
+  max_unpaired: 0
+min_paired: 10
+contamination:
+  allow_exact_overlap: false
+rename_proof:
+  - evaluator: cad.cadquery_items@0.1
+    code_sha256_before: "sha256:989506df861f0c1b42d458c93b4c07e5639c730cf3725a29c26f6546ec675e31"
+    files: [../scorer-ptc-hub/score_cad.py, ../scorer-ptc-hub/geom_metrics.py, ../scorer-ptc-hub/cad_sandbox.py,
+            ../scorer-ptc-hub/cad_protocol.py]
+    composite: true

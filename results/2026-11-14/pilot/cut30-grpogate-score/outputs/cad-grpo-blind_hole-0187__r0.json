@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-blind_hole-0187",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").cylinder(30, 45)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").cylinder(30, 45)\n```",
+  "score": 0.6175612271203919,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 0.6223456790123457,
+    "chamfer": 0.04384678843873476,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": 0.004508648940057584,
+    "n_new_tokens": 28,
+    "reward": 0.69680987654321,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.6196790123456792
+  }
+}

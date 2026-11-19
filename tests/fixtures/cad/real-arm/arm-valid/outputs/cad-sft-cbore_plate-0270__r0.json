@@ -1,0 +1,21 @@
+{
+  "item": "cad-sft-cbore_plate-0270",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(59, 55, 8).faces(\">Z\").workplane().rect(5, 5).cutThruAll()",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(59, 55, 8).faces(\">Z\").workplane().rect(5, 5).cutThruAll()\n```",
+  "score": 0.9938916634652324,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 1.0,
+    "chamfer": 0.008975051903771505,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.0004782350907414596,
+    "n_new_tokens": 49,
+    "reward": 0.9986176005569836,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.9965440013924588
+  }
+}

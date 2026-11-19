@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-flange-0264",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").circle(35.5).extrude(11).faces(\">Z\").workplane().circle(10.5).extrude(5)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").circle(35.5).extrude(11).faces(\">Z\").workplane().circle(10.5).extrude(5)\n```",
+  "score": 0.2559960105949777,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 0.2023852494276687,
+    "chamfer": 0.05630192950015067,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": 0.008341261882792035,
+    "n_new_tokens": 50,
+    "reward": 0.5553817395657116,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.6860690994866101
+  }
+}

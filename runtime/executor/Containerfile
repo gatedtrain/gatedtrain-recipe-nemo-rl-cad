@@ -1,0 +1,21 @@
+# B18 executor image of area "CAD" (area 6; README "Executor sandbox").
+# Build with the Docker context gatedtrain launches on (network needed for apt only):
+#   docker --context gatedtrain build --network host -t gatedtrain-cadexec:area6 -f executor/Containerfile executor/
+# The image adds only the system libraries that CadQuery's VTK import loads (measured on the host with
+# /proc/self/maps after `import cadquery`: libGL, libGLX, libGLdispatch, libX11, libxcb, libXau, libXdmcp, libbsd,
+# libexpat). Python and the executor venv are NOT in the image: the CPython 3.12.16 tree and executor/.venv are
+# mounted read-only from the host at their host paths (runtime kind venv_in_container, MM-32), as areas 1-4.
+# Base: Ubuntu 24.04 dated tag noble-20260930.1 (index digest, last updated 2026-10-17, older than two weeks);
+# packages from the Ubuntu snapshot of 2026-10-29 (apt --snapshot), so a rebuild resolves the same versions.
+# The image's existing user `ubuntu` has uid/gid 1000 (the uid the containers run as); containers run with --user 1000:1000.
+# The base image has no CA bundle, and snapshot.ubuntu.com is HTTPS only, so ca-certificates comes first from the
+# image's own HTTP archive (apt verifies it by the archive signature); its version is in the package list below.
+FROM docker.io/library/ubuntu:noble-20260930.1@sha256:68ee22004a9109b44973313b02ff7b1de250f1de0f5ecb628d73f579aaff33ac
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates \
+ && apt-get update --snapshot 20261029T000000Z \
+ && apt-get install -y --no-install-recommends --snapshot 20261029T000000Z libgl1 libx11-6 libxcb1 libexpat1 libbsd0 \
+ && rm -rf /var/lib/apt/lists/* \
+ && dpkg-query -W -f='${Package}=${Version}\n' > /etc/ptc-cadexec-packages.txt
+USER 1000:1000
+WORKDIR /tmp

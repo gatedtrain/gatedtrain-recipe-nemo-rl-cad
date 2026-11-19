@@ -1,0 +1,21 @@
+{
+  "item": "cad-sft-hex_prism-0094",
+  "program": "import cadquery as cq\n\nacross_flats = 36\ncircum_diameter = across_flats / 0.8660254037844386\nresult = cq.Workplane(\"XY\").polygon(6, circum_diameter).extrude(11.5, True)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nacross_flats = 36\ncircum_diameter = across_flats / 0.8660254037844386\nresult = cq.Workplane(\"XY\").polygon(6, circum_diameter).extrude(11.5, True)\n```",
+  "score": 0.5,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 0.5000000000000001,
+    "chamfer": 0.054910754872677284,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.00024418150508711287,
+    "n_new_tokens": 74,
+    "reward": 0.6000000000000001,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.5
+  }
+}

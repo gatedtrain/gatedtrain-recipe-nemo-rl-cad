@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-chamfer_box-0127",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(58, 63, 37).faces(\">Z\").chamfer(5)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(58, 63, 37).faces(\">Z\").chamfer(5)\n```",
+  "score": 1.0,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 1.0,
+    "chamfer": 0.010609293161996965,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.00013738488706843298,
+    "n_new_tokens": 41,
+    "reward": 1.0,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 1.0
+  }
+}

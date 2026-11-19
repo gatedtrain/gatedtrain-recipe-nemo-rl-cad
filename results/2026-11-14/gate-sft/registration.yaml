@@ -1,0 +1,71 @@
+# Area "CAD" SFT gate pre-registration: NeMo RL SFT of Qwen2.5-Coder-0.5B-Instruct on the ten SFT families against
+# the base alone, text-to-CadQuery (area6-cad README "Metric and tier", "Items and power"; MULTIMODAL-SPEC row 6;
+# decisions/MVP-MULTIMODAL.md "Area 6 decisions"). prototype, unpromotable. Unsigned: no named team has signed it.
+# Values fixed after the smoke run and before the full run's first START in gpu-guard.log. Deciding T3 metric `iou`
+# (volumetric IoU with the reference solid, numpy line integration over OCCT's tessellation; higher is better; [0, 1]),
+# blocking, construct-aligned in part (the SFT stage has no reward; the GRPO stage's OCCT reward is the R15-1 pairing
+# disclosed below); superiority with margin 0; alpha 0.025 one-sided, power 0.8, m = 1; N 300, K 1, eval seed 11.
+# sigma_plan fixed 0.79 = max(1.5 x ucb80(s_pilot), sqrt(2) x ucb80(s_base)) from the smoke (s_pilot 0.4251 = SD of
+# 20 paired differences smoke cut 10 vs base; s_base 0.4726; ucb80 with 19 df: 0.5004, 0.5563; 1.5 x 0.5004 = 0.751,
+# sqrt(2) x 0.5563 = 0.787, rounded up). Planning effect 0.13: n_required =
+# ceil(((1.95996 + 0.84162) x 0.79 / 0.13)^2) = 290 <= 300 (MDE at N 300: 0.128).
+# Any later change is an amendment: a new registration with `amends` and a new hash in spec.yaml (05:166).
+registration_version: 1
+registration_id: mm-a6-cad-sft-iou-superiority-v1
+signed_by: prototype-unsigned
+created_at: "2026-11-14T07:24:59Z"
+workflow: mm-a6-cad-sft
+gate: quality_gate
+clause:
+  type: superiority
+  metric: iou
+  direction: higher_is_better
+  margin: 0.0
+  alpha: 0.025
+  power: 0.8
+  planning_effect: 0.13
+  sigma_plan: fixed
+  unit: item
+  samples_per_item: 1
+  eval_seeds: [11]
+  interval: cluster_bootstrap
+  blocking: true
+margin_justification: >-
+  Superiority with delta_sup = 0: any held-out gain of mean volumetric IoU counts. Prototype value, not reviewed by a
+  named team.
+sigma_pilot:
+  sigma: 0.79
+  source: >-
+    GPU smoke (records/area6-cad/sft-smoke-3, eval-smoke-base-*-1 with score-2, eval-smoke-cut-*-1): 20 registered
+    items, two per family (gen_cad.py --limit 20 --round-robin), seed 11, the deployment sampler (vLLM greedy). Paired
+    differences of iou, smoke cut 10 (10 optimizer steps) minus base: mean +0.364, SD 0.425; base item SD 0.473.
+    sigma_plan = max(1.5 x ucb80(0.425), sqrt(2) x ucb80(0.473)) = 0.787, rounded up to 0.79.
+baseline_pilot_mean: 0.471    # base, 20 smoke items (mode 0, share 0.30, sd 0.473)
+construct_alignment: >-
+  iou measures agreement of the generated solid with the reference solid. The SFT stage optimizes token likelihood
+  of the reference programs, not iou; the area's GRPO reward (cad_reward_v1: OCCT validity, volume ratio and
+  bounding-box IoU) is computed by OCCT mass properties, iou by numpy line integration over OCCT's triangulation. Both
+  share the CadQuery/OCCT kernel that interprets the program and the valid-solid requirement. A pass shows that the
+  fine-tuned model's programs build solids closer to the references on the trained families, not a general gain in
+  CAD skill; `valid` (T0, supporting) and iou given `executes` are reported beside it.
+eval_distribution:
+  item_set_hash: "sha256:fcb253d330ae0765a85b220f1dbcf0df403dc81d22f968ec3d74eeda2c88ad67"   # manifest of area6-cad/items-sft/
+# The deployment sampler (every cut's sampler.json plus the backend and the shared prompt block; gen_cad.py).
+sampler: {"backend": "vllm", "chat_template": "checkpoint tokenizer_config chat template, add_generation_prompt=True, enable_thinking=False", "max_new_tokens": 512, "messages": "[{role: user, content: cad_protocol.user_prompt(description)}]", "prompt_block_sha256": "sha256:b9aea19b65e447006db92eb9e868357f519a37455d59169a778075c18ffd7e69", "samples_per_seed": 1, "strategy": "greedy", "temperature": 0.0, "top_p": 1.0}
+evaluators:
+  - id: cad.cadquery_items@0.1
+    # EXT-6: SHA-256 of the canonical JSON {evaluator, metric, direction, scorer}; scorer volumetric_iou_vertical_lines
+    # with code_sha256 = the composite scorer hash (sha256:c5b19935...).
+    manifest_hash: "sha256:295d0e3c21ea83e6122c7d50e8943633639b7ae29abb734843f89c32a4f3f836"
+multiplicity:
+  plan: single_gate
+  family: null
+analysis_code_version: ptc-skel 0.1.0
+bootstrap:
+  replicates: 10000
+  seed: 20261114
+pairing:
+  max_unpaired: 0
+min_paired: 10
+contamination:
+  allow_exact_overlap: false

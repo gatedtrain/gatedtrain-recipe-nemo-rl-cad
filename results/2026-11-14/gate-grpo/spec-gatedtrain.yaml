@@ -1,0 +1,34 @@
+# Spec of the gatedtrain 0.3.0 amendment registration-gatedtrain.yaml (version-only); otherwise spec-ptc-hub.yaml.
+# Area "CAD" GRPO workflow: NeMo RL GRPO with the CadQuery environment (programs executed only in the B18 executor
+# sidecar) from the gated SFT cut, gated on volumetric IoU of 300 items of the five held-out families (items-grpo)
+# against the SFT cut alone (MULTIMODAL-SPEC row 6; runtime/README.md). prototype,
+# unpromotable.
+# base: the SFT stage's gated cut out/area6-cad/sft-full-2/cuts/checkpoint-60 (run run-20261114T083105Z-e1ce8dfd,
+# gate PASS); train: data/grpo/shards (concatenated into data/grpo/train.jsonl, all 15 families, disjoint from the
+# items by row); items: the registered set (300). `gatedtrain run` refuses this spec.
+workflow: mm-a6-cad-grpo
+version: 1
+budget: {gpu_hours: 24}
+artifacts:
+  base:         {type: model_checkpoint, uri: "file:<mm-root>/out/area6-cad/sft-full-2/cuts/checkpoint-60@sha256:10449add286d2cdde5c961eef24d1ce176a955f53d7cfe3a89197955730fae7e"}
+  train:        {type: training_dataset, uri: "file:<mm-root>/area6-cad/data/grpo/shards@sha256:d63cb25cfde9a7675e6ef394c743e4a15a9d64acfeb836bba4ccf76176f11d2f"}
+  items:        {type: item_set, uri: "file:<mm-root>/area6-cad/items-grpo@sha256:c8ac5d64cf605c0ad0d2616d2cafcb142aafaffa8794e0b733bbb53f62e3d7f2", disjoint_from: [train]}
+  trainer_cfg:  {type: trainer_config, uri: "file:trainer.yaml@sha256:e65ef75fbbd411d90908ba4c2eea89777f0d83dd8176c7c3ca343a420a383170"}
+  registration: {type: registration, uri: "file:registration-gatedtrain.yaml@sha256:f76afbfebc755dfecf0afe85a026c39f87495867ce170c8ab6608d152b1dea91"}
+stages:
+  - id: grpo
+    uses: rl.nemo_rl_env@0.1
+    algorithm: grpo
+    model_family: llm.qwen2_5_coder@0.1
+    inputs: {model: base, data: train, config: trainer_cfg}
+    outputs: {model: ckpt}
+  - id: quality_gate
+    uses: gate.superiority@1.0
+    evaluator: cad.cadquery_items@0.1
+    sampler: deployment
+    inputs: {model: ckpt, baseline: base, items: items, registration: registration}
+    # mde equals the registration's planning_effect (G-4).
+    test: {metric: iou, alpha: 0.025, power: 0.80, mde: 0.085, cluster_by: item, seeds: 1}
+    on_fail: stop
+    owner: skeleton-demo
+    escalation: [skeleton-demo-lead]

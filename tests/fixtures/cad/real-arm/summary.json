@@ -1,0 +1,88 @@
+{
+  "chamfer_given_executes": {
+    "distinct": 2,
+    "max": 0.008975051903771505,
+    "mean": 0.008952748925023424,
+    "min": 0.008930445946275343,
+    "mode": 0.008930446,
+    "mode_share": 0.5,
+    "n": 2,
+    "sd": 3.154117502685496e-05,
+    "share_one": 0.0,
+    "share_zero": 0.0
+  },
+  "degeneracy_mm38": {
+    "iou": {
+      "mean_inside_by_5pct": true,
+      "mode_share_lt_0_5": false,
+      "pass": false,
+      "sd_gt_0": true
+    },
+    "valid": {
+      "binary": true,
+      "mean_strictly_inside": true,
+      "pass": true
+    }
+  },
+  "error_classes": [],
+  "errors": 0,
+  "exec_seconds": 0.15,
+  "gen_backend": "hf",
+  "iou": {
+    "distinct": 3,
+    "max": 0.9938916634652324,
+    "mean": 0.24793481326683448,
+    "min": 0.0,
+    "mode": 0.0,
+    "mode_share": 0.75,
+    "n": 8,
+    "sd": 0.45908750875325405,
+    "share_one": 0.0,
+    "share_zero": 0.75
+  },
+  "iou_given_executes": {
+    "distinct": 2,
+    "max": 0.9938916634652324,
+    "mean": 0.9917392530673379,
+    "min": 0.9895868426694435,
+    "mode": 0.989586843,
+    "mode_share": 0.5,
+    "n": 2,
+    "sd": 0.003043967976495177,
+    "share_one": 0.0,
+    "share_zero": 0.0
+  },
+  "items": 8,
+  "max_rss_mb": 34.8,
+  "missing_hashes": [
+    "model_hash",
+    "item_set_hash"
+  ],
+  "model_dir": "/srv/gatedtrain/area6-cad/models/qwen2.5-coder-0.5b-instruct",
+  "per_family_iou_mean": {
+    "box": 0.0,
+    "cbore_plate": 0.6611595020448919
+  },
+  "repeats": 1,
+  "responses": 8,
+  "reward_mean": 0.24938722170353778,
+  "sampler_hash": "sha256:941a33a6c75307c4d3a2743a38ac903401128ee7711d86847941d9bdbbf9d938",
+  "score_seconds": 0.83,
+  "statuses": {
+    "ok": 2,
+    "runtime_error": 6
+  },
+  "valid": {
+    "distinct": 2,
+    "max": 1.0,
+    "mean": 0.25,
+    "min": 0.0,
+    "mode": 0.0,
+    "mode_share": 0.75,
+    "n": 8,
+    "sd": 0.4629100498862757,
+    "share_one": 0.25,
+    "share_zero": 0.75
+  },
+  "wall_seconds": 0.9
+}

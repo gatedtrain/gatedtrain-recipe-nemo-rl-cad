@@ -1,0 +1,21 @@
+{
+  "item": "cad-sft-slot_plate-0210",
+  "program": "import cadquery as cq\n\nresult = (\n    cq.Workplane(\"XY\").box(97, 61, 7)\n    .faces(\">Z\").workplane().slot2D(37, 16).cutThruAll()\n)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = (\n    cq.Workplane(\"XY\").box(97, 61, 7)\n    .faces(\">Z\").workplane().slot2D(37, 16).cutThruAll()\n)\n```",
+  "score": 1.0,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 1.0,
+    "chamfer": 0.00785170506372812,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.00509443330761785,
+    "n_new_tokens": 58,
+    "reward": 1.0,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 1.0
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-blind_hole-0209",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").cboreHole(18, 20, 24)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").cboreHole(18, 20, 24)\n```",
+  "score": 0.0,
+  "seed": 11,
+  "status": "runtime_error",
+  "sub_metrics": {
+    "bbox_iou": null,
+    "chamfer": null,
+    "detail": "ValueError: Cannot find a solid on the stack or in the parent chain",
+    "executes": 0,
+    "finish_reason": "stop",
+    "n_new_tokens": 34,
+    "reward": 0.0,
+    "status": "runtime_error",
+    "unbalanced_columns": null,
+    "volume_ratio": null
+  }
+}

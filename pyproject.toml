@@ -1,0 +1,37 @@
+[project]
+name = "gatedtrain-recipe-nemo-rl-cad"
+version = "0.1.0"
+description = "gatedtrain recipe: CAD with NeMo RL: SFT then GRPO with a CadQuery environment and the B18 executor sidecar (Qwen2.5-Coder-0.5B-Instruct), with its gatedtrain adapter `nemo_rl_ext` (prototype)."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{name = "The gatedtrain Authors"}]
+requires-python = ">=3.12,<3.14"
+keywords = ["gatedtrain", "post-training", "nemo-rl", "grpo", "sft", "cadquery", "cad", "code-generation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+# The adapter is pure Python; the training and evaluation environment is runtime/ (its own pyproject.toml and uv.lock).
+dependencies = ["gatedtrain>=0.3,<0.4"]
+
+[project.urls]
+Homepage = "https://github.com/gatedtrain/gatedtrain-recipe-nemo-rl-cad"
+Source = "https://github.com/gatedtrain/gatedtrain-recipe-nemo-rl-cad"
+Issues = "https://github.com/gatedtrain/gatedtrain-recipe-nemo-rl-cad/issues"
+
+[project.entry-points."gatedtrain.adapters"]
+nemo_rl_ext = "gatedtrain_recipe_nemo_rl_cad.rows:PLUGIN"
+
+[build-system]
+requires = ["setuptools>=78"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

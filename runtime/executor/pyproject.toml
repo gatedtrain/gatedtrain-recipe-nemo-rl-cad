@@ -1,0 +1,20 @@
+# Multimodal prototype, area "CAD" (multimodal spec row 6): the CadQuery executor and
+# scorer. This lock builds the venv that the B18 executor container mounts read-only (README "Executor sandbox").
+# It holds only the CAD kernel and the scoring code's numeric dependencies: no torch, no network clients beyond
+# what cadquery pulls in. The trainer (NeMo RL) never imports it; it talks to the executor over a Unix socket.
+#
+# Version rule (as areas 1-4): latest stable release at least two weeks old (cut-off 2026-10-29), compatible.
+[project]
+name = "gatedtrain-recipe-nemo-rl-cad-executor"
+version = "0.1.0"
+license = "Apache-2.0"
+requires-python = "==3.12.*"
+dependencies = [
+    "cadquery==2.8.0",
+    "numpy==2.5.4",
+]
+
+[tool.uv]
+package = false
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+exclude-newer = "2026-10-29T00:00:00Z"

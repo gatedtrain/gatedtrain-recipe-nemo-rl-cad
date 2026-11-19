@@ -1,0 +1,21 @@
+{
+  "item": "cad-grpo-flange-0254",
+  "program": "import cadquery as cq\n\nacross_across = 76\ncircum_diameter = across_across / 0.8660254037844386\nresult = cq.Workplane(\"XY\").circle(29.5).extrude(12, both=True)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nacross_across = 76\ncircum_diameter = across_across / 0.8660254037844386\nresult = cq.Workplane(\"XY\").circle(29.5).extrude(12, both=True)\n```",
+  "score": 0.3645353628387222,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 0.3760397536999028,
+    "chamfer": 0.04823005724592141,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.004189204489050241,
+    "n_new_tokens": 72,
+    "reward": 0.676758906363615,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.8158575122091348
+  }
+}

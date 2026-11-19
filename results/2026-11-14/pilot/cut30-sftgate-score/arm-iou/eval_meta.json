@@ -1,0 +1,46 @@
+{
+  "adapter": "nemo_rl_ext",
+  "checkpoint": {
+    "base_model_hash": null,
+    "model_hash": null
+  },
+  "created_at": "2026-11-14T00:55:21Z",
+  "direction": "higher_is_better",
+  "env_version_sha256": null,
+  "eval_seeds": [
+    11
+  ],
+  "evaluator_id": "cad.cadquery_items@0.1",
+  "framework": {
+    "dtype": "float32",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.21.0"
+  },
+  "item_set_hash": null,
+  "metric": "iou",
+  "normalizer_sha256": null,
+  "sampler": {
+    "backend": "hf",
+    "chat_template": "checkpoint tokenizer_config chat template, add_generation_prompt=True, enable_thinking=False",
+    "max_new_tokens": 512,
+    "messages": "[{role: user, content: cad_protocol.user_prompt(description)}]",
+    "prompt_block_sha256": "sha256:b9aea19b65e447006db92eb9e868357f519a37455d59169a778075c18ffd7e69",
+    "samples_per_seed": 1,
+    "strategy": "greedy",
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "sampler_hash": "sha256:941a33a6c75307c4d3a2743a38ac903401128ee7711d86847941d9bdbbf9d938",
+  "schema": "ptc_skel.item_eval",
+  "schema_version": "1.0",
+  "score_range": [
+    0,
+    1
+  ],
+  "scorer": {
+    "code_sha256": "sha256:4a5393329e40246828eea3236d4f50a929acfaa8ee03ce231cab0ae872c442ac",
+    "name": "volumetric_iou_vertical_lines",
+    "version": "cad_iou_v1; numpy 2.5.4; 16384 columns; executor cadquery 2.8.0 ocp 7.9.3.1; limits {\"as_extra_mb\": 2048, \"cpu_s\": 10, \"fsize_mb\": 64, \"nofile\": 64, \"wall_s\": 15.0}",
+    "weights_sha256": null
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "item": "cad-sft-cylinder-0034",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").cylinder(8, 45)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").cylinder(8, 45)\n```",
+  "score": 0.8916705662143192,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 0.8919753086419753,
+    "chamfer": 0.009872641885315095,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.0038816785220868433,
+    "n_new_tokens": 27,
+    "reward": 0.9135802469135803,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 0.8919753086419755
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "code_sha256": {
+    "cad_protocol.py": "sha256:0f9d801de4119147762a267b0fd7ab71b2bdd3d254f3a84e661f93462decf9b1",
+    "cad_sandbox.py": "sha256:b5f19863d54ed35177f1479a805179f0338ca6a4186631ba221e8946be77862e",
+    "geom_metrics.py": "sha256:c8f4f0510dbceaa8407d0685d87c6aa69b0e3e61e6a12ce6384c63efd3ce3de4",
+    "score_cad.py": "sha256:f7215cf1cf621d46da88e6ffab6faf1bceb24d9e5a246d23e65c3f995377547b"
+  },
+  "exec_meta_sha256": "sha256:06a58871fd078129f1e13e1d855ac64d0d2af70c18139fd7a45d176e3cdb519b",
+  "executable": "/srv/gatedtrain/area6-cad/executor/.venv/bin/python",
+  "executor": {
+    "cadquery": "2.8.0",
+    "ocp": "7.9.3.1",
+    "python": "3.12.16"
+  },
+  "gen_meta_sha256": "sha256:e8dcb1f97d2d4adc7cb33b3cf1142b87e58425c47a02ea42a6085280a2bdd4a6",
+  "gid": 1000,
+  "items_sha256": "sha256:9176194301e2a42af745747c6d17b37f799f9b05f5132e8aa41b69b876320963",
+  "limits": {
+    "as_extra_mb": 2048,
+    "cpu_s": 10,
+    "fsize_mb": 64,
+    "nofile": 64,
+    "wall_s": 15.0
+  },
+  "python": "3.12.16",
+  "scorer_code_sha256": "sha256:6f44fcf8187644e6f9e5db5c31c0bd64516eaa28ba2fa7eb39c5817c394d3e42",
+  "uid": 1000,
+  "uv_lock_sha256": "sha256:8f4264b967785942044058ecd8fcd66468bbb8f4421dbb2e6d941998c3366c55",
+  "workers": 2
+}

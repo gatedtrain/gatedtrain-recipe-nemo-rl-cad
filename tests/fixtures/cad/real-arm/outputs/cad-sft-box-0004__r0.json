@@ -1,0 +1,21 @@
+{
+  "item": "cad-sft-box-0004",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(88, 22, 8).centered_at_origin()",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(88, 22, 8).centered_at_origin()\n```",
+  "score": 0.0,
+  "seed": 11,
+  "status": "runtime_error",
+  "sub_metrics": {
+    "bbox_iou": null,
+    "chamfer": null,
+    "detail": "AttributeError: 'Workplane' object has no attribute 'centered_at_origin'",
+    "executes": 0,
+    "finish_reason": "stop",
+    "n_new_tokens": 35,
+    "reward": 0.0,
+    "status": "runtime_error",
+    "unbalanced_columns": null,
+    "volume_ratio": null
+  }
+}

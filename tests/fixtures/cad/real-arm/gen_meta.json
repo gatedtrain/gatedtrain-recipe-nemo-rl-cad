@@ -1,0 +1,39 @@
+{
+  "backend": "hf",
+  "cut": null,
+  "eval_seeds": [
+    11
+  ],
+  "items": 50,
+  "items_sha256": "sha256:9176194301e2a42af745747c6d17b37f799f9b05f5132e8aa41b69b876320963",
+  "limit": 50,
+  "model_dir": "/srv/gatedtrain/area6-cad/models/qwen2.5-coder-0.5b-instruct",
+  "model_files": {
+    "config.json": "sha256:b1e58593cd31852f7da5c2fc31ddf6135b9c066c0fd9177a4bbe95717083adff",
+    "generation_config.json": "sha256:fdaccbcb02f3e1e7914ccb0f69ebe899071ffd27cf825166d823163e156870f2",
+    "merges.txt": "sha256:599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+    "model.safetensors": "sha256:f9523886352217ded3aeeef552b381af79d568c6d49a4b9e423288cea56b0a44",
+    "tokenizer.json": "sha256:c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_config.json": "sha256:959e7f1d9a1b7641a6d6ce05ca97b75c7894fcb66cbe5a040406458fb1128ee4",
+    "vocab.json": "sha256:ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "prompt_block_sha256": "sha256:b9aea19b65e447006db92eb9e868357f519a37455d59169a778075c18ffd7e69",
+  "round_robin": true,
+  "sampler": {
+    "chat_template": "checkpoint tokenizer_config chat template, add_generation_prompt=True, enable_thinking=False",
+    "max_new_tokens": 512,
+    "messages": "[{role: user, content: cad_protocol.user_prompt(description)}]",
+    "samples_per_seed": 1,
+    "strategy": "greedy",
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "script_sha256": "sha256:3aeb370442ebe8c9b5fbdc5eddc362f16a294a09275137e0506a5b25379fa48e",
+  "seconds_per_response": 20.714,
+  "versions": {
+    "dtype": "float32",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.21.0"
+  },
+  "wall_seconds": 1035.7
+}

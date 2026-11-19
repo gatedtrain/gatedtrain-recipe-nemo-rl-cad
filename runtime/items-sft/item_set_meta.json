@@ -1,0 +1,102 @@
+{
+  "families": [
+    "box",
+    "cbore_plate",
+    "cup",
+    "cylinder",
+    "fillet_box",
+    "hex_prism",
+    "l_bracket",
+    "plate_hole",
+    "slot_plate",
+    "stepped_shaft"
+  ],
+  "generator": {
+    "executor_versions": {
+      "cadquery": "2.8.0",
+      "ocp": "7.9.3.1",
+      "python": "3.12.16"
+    },
+    "families": [
+      "box",
+      "cylinder",
+      "tube",
+      "plate_hole",
+      "plate_4holes",
+      "hex_prism",
+      "stepped_shaft",
+      "fillet_box",
+      "chamfer_box",
+      "cup",
+      "blind_hole",
+      "slot_plate",
+      "l_bracket",
+      "cbore_plate",
+      "flange"
+    ],
+    "families_sha256": "sha256:e4315c1f715dd93624886dad4e03bddd7ad9f73ee7eda22282188ae0a0f19465",
+    "held_out_of_sft": [
+      "blind_hole",
+      "plate_4holes",
+      "tube",
+      "flange",
+      "chamfer_box"
+    ],
+    "order": "per family: its gate items, then grpo, then sft; training files permuted once",
+    "prompt_block_sha256": "sha256:b9aea19b65e447006db92eb9e868357f519a37455d59169a778075c18ffd7e69",
+    "protocol_sha256": "sha256:0f9d801de4119147762a267b0fd7ab71b2bdd3d254f3a84e661f93462decf9b1",
+    "rng": "random.Random(int(sha256('<seed>:<family>')[:8]))",
+    "script": "make_data.py",
+    "script_sha256": "sha256:9d3d4cbbf2ae8ebd2da8ff8e34d3d993f12e58c19132adb98ca9139563106454",
+    "seed": 20261113,
+    "sft_families": [
+      "box",
+      "cylinder",
+      "plate_hole",
+      "hex_prism",
+      "stepped_shaft",
+      "fillet_box",
+      "cup",
+      "slot_plate",
+      "l_bracket",
+      "cbore_plate"
+    ]
+  },
+  "items_sha256": "sha256:9176194301e2a42af745747c6d17b37f799f9b05f5132e8aa41b69b876320963",
+  "n_items": 300,
+  "overlap": {
+    "items-grpo&grpo": {
+      "geometry": 0,
+      "text": 0
+    },
+    "items-grpo&sft": {
+      "geometry": 0,
+      "text": 0
+    },
+    "items-sft&grpo": {
+      "geometry": 0,
+      "text": 0
+    },
+    "items-sft&items-grpo": {
+      "geometry": 0,
+      "text": 0
+    },
+    "items-sft&sft": {
+      "geometry": 0,
+      "text": 0
+    },
+    "sft&grpo": {
+      "geometry": 0,
+      "text": 0
+    }
+  },
+  "per_family": 30,
+  "ref_mesh": "OCCT STL from cad_sandbox (relative deflection 0.002 of the bbox diagonal, angular 0.1 rad, serial)",
+  "schema": "ptc_mm.cad_item_set",
+  "schema_version": "2.0",
+  "set": "items-sft",
+  "tags": [
+    "prototype",
+    "unpromotable"
+  ]
+}

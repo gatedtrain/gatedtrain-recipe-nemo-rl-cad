@@ -1,0 +1,1 @@
+"""gatedtrain recipe: CAD with NeMo RL: SFT then GRPO with a CadQuery environment and the B18 executor sidecar (Qwen2.5-Coder-0.5B-Instruct). `rows` registers the adapter `nemo_rl_ext` (`adapter.NemoRlExtAdapter`)."""

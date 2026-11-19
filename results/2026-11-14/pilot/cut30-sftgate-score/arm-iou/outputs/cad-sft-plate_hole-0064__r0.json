@@ -1,0 +1,21 @@
+{
+  "item": "cad-sft-plate_hole-0064",
+  "program": "import cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(23, 37, 12).faces(\">Z\").workplane().hole(9)",
+  "repeat": 0,
+  "response": "```python\nimport cadquery as cq\n\nresult = cq.Workplane(\"XY\").box(23, 37, 12).faces(\">Z\").workplane().hole(9)\n```",
+  "score": 1.0,
+  "seed": 11,
+  "status": "ok",
+  "sub_metrics": {
+    "bbox_iou": 1.0,
+    "chamfer": 0.009888106688008979,
+    "executes": 1,
+    "finish_reason": "stop",
+    "mc_volume_rel_err": -0.00021107400523110977,
+    "n_new_tokens": 42,
+    "reward": 1.0,
+    "status": "ok",
+    "unbalanced_columns": 0,
+    "volume_ratio": 1.0
+  }
+}
