@@ -36,6 +36,21 @@ sys.path.insert(0, str(HERE / "executor"))   # cad_protocol, cad_sandbox (the ex
 import cad_protocol  # noqa: E402
 
 
+def text_of(content) -> str:
+    """The text of a message's content: a string as is, or the text parts of a list of content parts
+    (`[{type: text, text: ...}]`). str() of such a list would give its repr, with escaped newlines and quotes."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, (list, tuple)):
+        return "".join(p.get("text", "") for p in content if isinstance(p, dict) and p.get("type") == "text")
+    return ""
+
+
+def responses_of(message_log_batch) -> list[str]:
+    """Each conversation's assistant text (what the environment scores)."""
+    return ["".join(text_of(m["content"]) for m in conv if m["role"] == "assistant") for conv in message_log_batch]
+
+
 class CadEnvCore:
     """Framework-free part of the environment (testable without NeMo RL)."""
 
@@ -77,8 +92,7 @@ try:  # the Ray actor exists only inside the NeMo RL image
             self.core = CadEnvCore(cfg)
 
         def step(self, message_log_batch, metadata):
-            responses = ["".join(str(m["content"]) for m in conv if m["role"] == "assistant")
-                         for conv in message_log_batch]
+            responses = responses_of(message_log_batch)
             rewards, results = self.core.score(responses, [m["ground_truth"] for m in metadata])
             observations = [{"role": "environment", "content": f"Environment: {r['status']}"} for r in results]
             rw = torch.tensor(rewards, dtype=torch.float32).cpu()

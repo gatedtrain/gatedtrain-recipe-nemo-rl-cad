@@ -2,9 +2,9 @@
 NeMo RL source is edited). Imported by run_sft_cad.py and run_grpo_cad.py in the NeMo RL driver process (the
 image's system Python, NeMo RL at 4f39fd86289a2ffd5aaf5d202702f7fd7185c924).
 
-Not covered by the CPU tests: NeMo RL needs the GPU image; the hook points were read from the pinned clone (file:line
-in README "Trainer"). The smoke run verifies them; every hook fails loudly (raises) rather than writing a partial
-record.
+The hook points need the GPU image: they were read from the pinned clone (file:line in README "Trainer") and the smoke
+run verifies them. The wrappers themselves run on CPU in tests/test_runtime.py against stand-in NeMo RL modules. Every
+hook fails loudly (raises) rather than writing a partial record.
 
 1. Observed SFT consumption (`samples.jsonl`, `train_steps.jsonl`): `nemo_rl.algorithms.sft.prepare_sft_batch` is
    wrapped. sft_train calls it once per training step, before `policy.train` (sft.py:736-757); validation also
@@ -57,8 +57,12 @@ def _append_fsync(path: Path, lines: list[dict]) -> None:
 # ------------------------------------------------------------------------------------------- SFT sample log ---
 def install_sft_sample_log(out: Path, train_file: Path, batch_size: int, attempt: int) -> None:
     import nemo_rl.algorithms.sft as sft
+    from cad_env import text_of
 
     rows = [json.loads(x) for x in open(train_file, encoding="utf-8")]
+    if len(rows) < batch_size:
+        raise RuntimeError(f"{train_file}: {len(rows)} rows, fewer than the batch size {batch_size} (drop_last=True "
+                           "would leave no training step)")
     steps_per_epoch = len(rows) // batch_size          # drop_last=True (sft.py:353)
     orig = sft.prepare_sft_batch
     state = {"step": 0}
@@ -70,7 +74,7 @@ def install_sft_sample_log(out: Path, train_file: Path, batch_size: int, attempt
         lines = []
         for pos, i in enumerate(idx):
             row = rows[i]
-            content = "".join(str(m.get("content", "")) for m in batch["message_log"][pos] if m.get("role") == "user")
+            content = "".join(text_of(m.get("content")) for m in batch["message_log"][pos] if m.get("role") == "user")
             if row["input"] not in content:
                 raise RuntimeError(f"SFT step {step}: idx {i} ({row['row_id']}) does not match the batch text")
             lines.append({"step": step, "epoch": (step - 1) // steps_per_epoch, "position": pos, "idx": i,
@@ -107,8 +111,12 @@ def write_cut(step_dir: Path, step: int, out: Path, base_dir: Path, run_meta: di
     partial.mkdir()
     cons = step_dir / "policy" / "weights" / "model" / "consolidated"
     shards = sorted(cons.glob("*.safetensors"))
-    if len(shards) != 1:
-        raise RuntimeError(f"{cons}: expected one consolidated safetensors file, found {[s.name for s in shards]}")
+    if not shards:
+        raise RuntimeError(f"{cons}: no consolidated safetensors file")
+    if len(shards) > 1:
+        raise RuntimeError(f"{cons}: several consolidated weight files {[s.name for s in shards]}: this recipe's adapter "
+                           "and generation read one model.safetensors; adapt rows.py components, the adapter's cut "
+                           "checks and gen_cad.py deploy list before training a sharded model")
     os.link(shards[0], partial / "model.safetensors")
     os.link(cons / "config.json", partial / "config.json")
     tok = step_dir / "policy" / "tokenizer"
