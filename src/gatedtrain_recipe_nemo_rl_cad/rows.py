@@ -137,12 +137,13 @@ TRAINER_ROWS[NAME] = {
 # Area "CAD" evaluators (runtime/README.md "Decisions": deciding `iou`, T3 with the construct-alignment disclosure,
 # blocking; `valid` supporting, T0). Scorer: score_cad.py in the executor container; code_sha256 is its composite
 # `scorer_code_sha256` (SHA-256 of the compact sorted JSON of the SHA-256 of score_cad.py, geom_metrics.py,
-# executor/cad_sandbox.py and executor/cad_protocol.py; score_cad.py sha256 f7215cf1..., the review-11 version: it scores
+# executor/cad_sandbox.py and executor/cad_protocol.py; score_cad.py sha256 93017376..., the review-11 version (it scores
 # the records of the execution step and runs no generated code; numeric sub_metrics with `status_code` and `truncated`,
-# `framework` {name, version}, arm-valid under its own id, gen_meta.json copied), the version the string it writes (a CPU
+# `framework` {name, version}, arm-valid under its own id, gen_meta.json copied) with the RFC 8785 `sampler_hash`
+# (before: f7215cf1..., composite 6f44fcf8..., which wrote it as compact sorted JSON), the version the string it writes (a CPU
 # gen -> exec -> score of 8 pilot items, tests/fixtures/cad/real-arm/). An item is one registered part description; its full prompt `text`
 # is the exact-overlap key against the training rows' `text` (= `input`, the prompt NeMo RL reads).
-SCORE_CAD_CODE_SHA256 = "sha256:6f44fcf8187644e6f9e5db5c31c0bd64516eaa28ba2fa7eb39c5817c394d3e42"
+SCORE_CAD_CODE_SHA256 = "sha256:958ab45f7e79582b352052753b0794832011289cfc746b951bd5e2762b8a16e6"
 _CAD = {
     "direction": "higher_is_better",
     "score_range": (0, 1),

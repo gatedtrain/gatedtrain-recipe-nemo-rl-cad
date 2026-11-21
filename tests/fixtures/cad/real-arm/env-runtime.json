@@ -3,7 +3,7 @@
     "cad_protocol.py": "sha256:0f9d801de4119147762a267b0fd7ab71b2bdd3d254f3a84e661f93462decf9b1",
     "cad_sandbox.py": "sha256:b5f19863d54ed35177f1479a805179f0338ca6a4186631ba221e8946be77862e",
     "geom_metrics.py": "sha256:c8f4f0510dbceaa8407d0685d87c6aa69b0e3e61e6a12ce6384c63efd3ce3de4",
-    "score_cad.py": "sha256:f7215cf1cf621d46da88e6ffab6faf1bceb24d9e5a246d23e65c3f995377547b"
+    "score_cad.py": "sha256:9301737632efefb69fe743c620f63f6ecc8287553c5e07cc3e961bb94afb1783"
   },
   "exec_meta_sha256": "sha256:06a58871fd078129f1e13e1d855ac64d0d2af70c18139fd7a45d176e3cdb519b",
   "executable": "/srv/gatedtrain/area6-cad/executor/.venv/bin/python",
@@ -23,7 +23,7 @@
     "wall_s": 15.0
   },
   "python": "3.12.16",
-  "scorer_code_sha256": "sha256:6f44fcf8187644e6f9e5db5c31c0bd64516eaa28ba2fa7eb39c5817c394d3e42",
+  "scorer_code_sha256": "sha256:958ab45f7e79582b352052753b0794832011289cfc746b951bd5e2762b8a16e6",
   "uid": 1000,
   "uv_lock_sha256": "sha256:8f4264b967785942044058ecd8fcd66468bbb8f4421dbb2e6d941998c3366c55",
   "workers": 2

@@ -29,7 +29,7 @@
     "temperature": 0.0,
     "top_p": 1.0
   },
-  "sampler_hash": "sha256:941a33a6c75307c4d3a2743a38ac903401128ee7711d86847941d9bdbbf9d938",
+  "sampler_hash": "sha256:ba45c6087978acba8a68efb5888a7b9e49268d8a6a909a9170df02677a1d6f88",
   "schema": "gatedtrain.item_eval",
   "schema_version": "1.0",
   "score_range": [
@@ -37,7 +37,7 @@
     1
   ],
   "scorer": {
-    "code_sha256": "sha256:6f44fcf8187644e6f9e5db5c31c0bd64516eaa28ba2fa7eb39c5817c394d3e42",
+    "code_sha256": "sha256:958ab45f7e79582b352052753b0794832011289cfc746b951bd5e2762b8a16e6",
     "name": "volumetric_iou_vertical_lines",
     "version": "cad_iou_v1; numpy 2.5.4; 16384 columns; executor cadquery 2.8.0 ocp 7.9.3.1; limits {\"as_extra_mb\": 2048, \"cpu_s\": 10, \"fsize_mb\": 64, \"nofile\": 64, \"wall_s\": 15.0}",
     "weights_sha256": null

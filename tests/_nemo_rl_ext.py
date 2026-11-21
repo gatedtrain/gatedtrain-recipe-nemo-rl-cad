@@ -100,12 +100,13 @@ CUT_SAMPLER = {"strategy": "greedy", "temperature": 0.0, "top_p": 1.0, "max_new_
                                  "enable_thinking=False"),
                "messages": "[{role: user, content: cad_protocol.user_prompt(description)}]"}
 SAMPLER = {**CUT_SAMPLER, "backend": "vllm", "prompt_block_sha256": PROMPT_BLOCK_SHA256}
-SCORER_CODE = "sha256:6f44fcf8187644e6f9e5db5c31c0bd64516eaa28ba2fa7eb39c5817c394d3e42"
-# score_cad.py env-runtime.json `code_sha256` of the review-11 runtime (scorer_code_sha256 = its compact-JSON hash).
+SCORER_CODE = "sha256:958ab45f7e79582b352052753b0794832011289cfc746b951bd5e2762b8a16e6"
+# score_cad.py env-runtime.json `code_sha256` of the review-11 runtime with the RFC 8785 sampler hash
+# (scorer_code_sha256 = its compact-JSON hash).
 CODE_SHA256 = {"cad_protocol.py": "sha256:0f9d801de4119147762a267b0fd7ab71b2bdd3d254f3a84e661f93462decf9b1",
                "cad_sandbox.py": "sha256:b5f19863d54ed35177f1479a805179f0338ca6a4186631ba221e8946be77862e",
                "geom_metrics.py": "sha256:c8f4f0510dbceaa8407d0685d87c6aa69b0e3e61e6a12ce6384c63efd3ce3de4",
-               "score_cad.py": "sha256:f7215cf1cf621d46da88e6ffab6faf1bceb24d9e5a246d23e65c3f995377547b"}
+               "score_cad.py": "sha256:9301737632efefb69fe743c620f63f6ecc8287553c5e07cc3e961bb94afb1783"}
 EXECUTOR = f"{AREA6}/executor"
 EXEC_LIMITS = {"as_extra_mb": 2048, "cpu_s": 10, "fsize_mb": 64, "nofile": 64, "wall_s": 15.0}
 EXEC_VERSIONS = {"cadquery": "2.8.0", "ocp": "7.9.3.1", "python": "3.12.16"}

@@ -321,7 +321,8 @@ class TestRuntimeFacts(unittest.TestCase):
 
     def test_real_scored_arms(self):
         """A CPU scoring of 8 pilot items (base model, `items-sft`) by the review-11 score_cad.py
-        (fixtures/cad/real-arm/, copied; host paths replaced by /srv/gatedtrain and the code hashes by the published code's): both arms pass MM-1/MM-2, agree with the registry rows (evaluator id,
+        (fixtures/cad/real-arm/, copied; host paths replaced by /srv/gatedtrain, the code hashes by the published code's
+        and `sampler_hash` by the RFC 8785 hash the published code writes): both arms pass MM-1/MM-2, agree with the registry rows (evaluator id,
         metric, scorer), and pass the adapter's arm checks against the real item set and the real base directory."""
         from gatedtrain.ext.arm import read_lines, read_meta
         from gatedtrain.ext.fill import arm_fill
@@ -335,7 +336,7 @@ class TestRuntimeFacts(unittest.TestCase):
             res = arm_fill(adapter=C.ADAPTER, arm=real / f"arm-{metric}", checkpoint=REAL / C.BASE_REL,
                            items=REAL / "items-sft")
             self.assertEqual(sorted(res["filled"]), ["checkpoint.model_hash", "item_set_hash"])
-            self.assertEqual(res["converted"], ["sampler_hash"])
+            self.assertEqual(res["converted"], [])        # the scorer writes the RFC 8785 sampler hash itself
         self.assertEqual(file_sha256(REAL / "score_cad.py"), C.CODE_SHA256["score_cad.py"])
         items = read_jsonl(REAL / "items-sft" / "items.jsonl")
         for metric, eid in (("iou", C.EVALUATOR_ID), ("valid", C.SUPPORT_ID)):
@@ -1124,7 +1125,9 @@ class TestArmFill(CadCase):
         meta = json.loads((out / "arm-iou" / "eval_meta.json").read_text())
         self.assertEqual(meta["checkpoint"]["model_hash"], sc.sft_model)
         self.assertEqual(meta["item_set_hash"], sc.item_set_hash["grpo"])
-        self.assertEqual(meta["sampler_hash"], sha_of(C.SAMPLER))        # compact JSON converted (floats 0.0, 1.0)
+        # build_score(model=None) writes the compact JSON hash of scorers before the RFC 8785 fix (published arms):
+        # converted (floats 0.0, 1.0)
+        self.assertEqual(meta["sampler_hash"], sha_of(C.SAMPLER))
         proc = self.fill(sc, out / "arm-valid", sc.base, sc.items_dir["grpo"])
         self.assertEqual(proc.returncode, EXIT_OK, describe(proc))
         meta = json.loads((out / "arm-valid" / "eval_meta.json").read_text())

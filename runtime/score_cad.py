@@ -70,8 +70,86 @@ def sha256_file(p: Path) -> str:
     return sha256_bytes(Path(p).read_bytes())
 
 
+# RFC 8785 (JCS) encoder. The framework recomputes `sampler_hash` with `gatedtrain.canonical.canonical_json`, which is
+# not installed in the executor container, so the rules of its `_encode`, `_encode_str` and `_encode_float` are copied
+# here (gatedtrain, src/gatedtrain/canonical.py, Apache-2.0, The gatedtrain Authors). json.dumps writes the sampler's
+# 0.0 and 1.0 as `0.0`/`1.0` where RFC 8785 writes `0`/`1`, so the hashes would differ.
+_MAX_SAFE_INT = 2**53 - 1
+
+
+def _enc_str(s: str) -> str:
+    out = ['"']
+    for ch in s:
+        o = ord(ch)
+        if 0xD800 <= o <= 0xDFFF:
+            raise ValueError("lone surrogate in string")
+        if ch == '"':
+            out.append('\\"')
+        elif ch == "\\":
+            out.append("\\\\")
+        elif o < 0x20:
+            out.append({"\b": "\\b", "\t": "\\t", "\n": "\\n", "\f": "\\f", "\r": "\\r"}.get(ch, f"\\u{o:04x}"))
+        else:
+            out.append(ch)
+    out.append('"')
+    return "".join(out)
+
+
+def _enc_float(x: float) -> str:
+    """ECMAScript Number.prototype.toString form (RFC 8785 section 3.2.2.3)."""
+    from decimal import Decimal
+    if math.isnan(x) or math.isinf(x):
+        raise ValueError("NaN and Infinity are not allowed in canonical JSON")
+    if x == 0:
+        return "0"
+    sign = "-" if x < 0 else ""
+    tup = Decimal(repr(float(abs(x)))).normalize().as_tuple()
+    digits = "".join(map(str, tup.digits))
+    k = len(digits)
+    n = tup.exponent + k
+    if k <= n <= 21:
+        body = digits + "0" * (n - k)
+    elif 0 < n <= 21:
+        body = digits[:n] + "." + digits[n:]
+    elif -6 < n <= 0:
+        body = "0." + "0" * (-n) + digits
+    else:
+        e = n - 1
+        mant = digits[0] + ("." + digits[1:] if k > 1 else "")
+        body = f"{mant}e{'+' if e > 0 else '-'}{abs(e)}"
+    return sign + body
+
+
+def _enc(obj) -> str:
+    if obj is None:
+        return "null"
+    if obj is True:
+        return "true"
+    if obj is False:
+        return "false"
+    if isinstance(obj, int):
+        if abs(obj) > _MAX_SAFE_INT:
+            raise ValueError(f"integer {obj} outside +/-(2^53 - 1)")
+        return str(obj)
+    if isinstance(obj, float):
+        return _enc_float(obj)
+    if isinstance(obj, str):
+        return _enc_str(obj)
+    if isinstance(obj, dict):
+        for k in obj:
+            if not isinstance(k, str):
+                raise ValueError(f"object key {k!r} is not a string")
+            if any(ord(ch) > 0xFFFF for ch in k):
+                raise ValueError(f"object key {k!r} has a supplementary-plane character")
+        return "{" + ",".join(_enc_str(k) + ":" + _enc(obj[k]) for k in sorted(obj, key=lambda s: s.encode("utf-16-be"))) + "}"
+    if isinstance(obj, (list, tuple)):
+        return "[" + ",".join(_enc(v) for v in obj) + "]"
+    raise ValueError(f"type {type(obj).__name__} is not allowed in canonical JSON")
+
+
 def canonical(doc) -> bytes:
-    return json.dumps(doc, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    """RFC 8785 bytes, equal to `gatedtrain.canonical.canonical_json(doc)` (tests/test_scorer_canonical.py)."""
+    return _enc(doc).encode("utf-8")
 
 
 def write_json(path: Path, doc) -> None:

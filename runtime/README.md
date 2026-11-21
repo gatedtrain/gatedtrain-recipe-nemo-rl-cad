@@ -385,7 +385,10 @@ null; status names and failure details stay in `scores.jsonl` and the output fil
 (0, `error` null) with its `status_code`. `framework` = `{name, version}` of the generation backend (`vllm` on the
 GPU, `transformers` for the CPU pilot). Scorer `code_sha256` (both arms) = SHA-256 of the canonical JSON of the
 four files' hashes (`score_cad.py`, `geom_metrics.py`, `executor/cad_sandbox.py`, `executor/cad_protocol.py`;
-keys are the base names), currently `sha256:343647f2…3efe`.
+keys are the base names), currently `sha256:958ab45f…16e6` (`SCORE_CAD_CODE_SHA256` in the adapter's `rows.py`).
+`sampler_hash` = SHA-256 of the RFC 8785 canonical JSON of `sampler`, the encoding gatedtrain's ext-collect recomputes
+(`score_cad.canonical` copies gatedtrain's encoder; before the fix the scorer wrote compact sorted JSON, which differs
+for the sampler's floats 0.0 and 1.0, and only `ext-arm-fill` made such an arm collectable).
 `gen_cad.py` checks a cut before loading it (every `cut.json` hash, no unlisted file).
 
 ## Profiles and cost
@@ -482,8 +485,9 @@ Two `ext-collect` runs (MM-15): SFT (base -> SFT cut) and GRPO (SFT cut -> GRPO 
    (SFT and GRPO shards): 0 by construction, and 0 geometries shared (stronger than text). Optional family check for
    the GRPO gate: no `items-grpo` family occurs in `data/sft/` (`family` field), as `make_data.py` enforces.
 8. **Arms.** `arm-iou/` (deciding, `cad.cadquery_items@0.1`) and `arm-valid/` (supporting, `cad.cadquery_valid_items@0.1`) from `score_cad.py`, plus the copied `gen_meta.json`; each evaluation is three launches (generation GPU; execution and scoring CPU, `gpus: false`), and ext-launch should refuse an execution launch that mounts the area root or any `items-*`/`data/` path; `ext-arm-fill` supplies
-   `model_hash`, `item_set_hash` and the RFC 8785 `sampler_hash` (the evaluator writes compact sorted JSON, strings
-   and integers plus floats 0.0 and 1.0: check that RFC 8785 equals it, as areas 2-4). `framework` in
+   `model_hash`, `item_set_hash` and the RFC 8785 `sampler_hash` (the published gates' scorer wrote compact sorted
+   JSON, which differs from RFC 8785 for the floats 0.0 and 1.0, and ext-arm-fill converted it; the scorer now writes
+   the RFC 8785 hash itself, which ext-arm-fill verifies). `framework` in
    `eval_meta.json` is the generation backend's versions (vLLM) from `gen_meta.json`. Collect should check that every
    output's `program` is what `cad_protocol.extract_program` gives for its `response`, and that `gen_meta.json`
    `model_files` equal the evaluated cut's files.
