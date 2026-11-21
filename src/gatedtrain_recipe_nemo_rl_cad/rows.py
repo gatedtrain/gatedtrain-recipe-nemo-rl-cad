@@ -136,7 +136,8 @@ TRAINER_ROWS[NAME] = {
 
 # Area "CAD" evaluators (runtime/README.md "Decisions": deciding `iou`, T3 with the construct-alignment disclosure,
 # blocking; `valid` supporting, T0). Scorer: score_cad.py in the executor container; code_sha256 is its composite
-# `scorer_code_sha256` (SHA-256 of the compact sorted JSON of the SHA-256 of score_cad.py, geom_metrics.py,
+# `scorer_code_sha256` (SHA-256 of the canonical JSON, byte-identical to compact sorted JSON for these strings, of the
+# SHA-256 of score_cad.py, geom_metrics.py,
 # executor/cad_sandbox.py and executor/cad_protocol.py; score_cad.py sha256 93017376..., the review-11 version (it scores
 # the records of the execution step and runs no generated code; numeric sub_metrics with `status_code` and `truncated`,
 # `framework` {name, version}, arm-valid under its own id, gen_meta.json copied) with the RFC 8785 `sampler_hash`

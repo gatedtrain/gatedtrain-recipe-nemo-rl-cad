@@ -102,7 +102,7 @@ CUT_SAMPLER = {"strategy": "greedy", "temperature": 0.0, "top_p": 1.0, "max_new_
 SAMPLER = {**CUT_SAMPLER, "backend": "vllm", "prompt_block_sha256": PROMPT_BLOCK_SHA256}
 SCORER_CODE = "sha256:958ab45f7e79582b352052753b0794832011289cfc746b951bd5e2762b8a16e6"
 # score_cad.py env-runtime.json `code_sha256` of the review-11 runtime with the RFC 8785 sampler hash
-# (scorer_code_sha256 = its compact-JSON hash).
+# (scorer_code_sha256 = its canonical JSON hash, the same bytes as compact sorted JSON for these strings).
 CODE_SHA256 = {"cad_protocol.py": "sha256:0f9d801de4119147762a267b0fd7ab71b2bdd3d254f3a84e661f93462decf9b1",
                "cad_sandbox.py": "sha256:b5f19863d54ed35177f1479a805179f0338ca6a4186631ba221e8946be77862e",
                "geom_metrics.py": "sha256:c8f4f0510dbceaa8407d0685d87c6aa69b0e3e61e6a12ce6384c63efd3ce3de4",

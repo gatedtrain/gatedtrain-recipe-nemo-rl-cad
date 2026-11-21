@@ -325,7 +325,8 @@ output, while the same evaluations' `summary.json`, their `arm-valid` (supportin
 carry the scorer's `sha256:82bf58b1…`. The sampler itself was the same
 (`gen_meta.json` records `0.0` and `1.0` throughout), and the arm contents (`items.jsonl`, outputs) were not touched.
 Without the `ext-arm-fill` step, the scorer's arms would not have been collectable at all; no gate could have passed
-on a wrong sampler.
+on a wrong sampler. The gate arms themselves are local run outputs and are not published in this repository (only the
+pilot arm under `results/2026-11-14/pilot/` is); the hashes quoted here are the record.
 
 The gates were scored by the scorer versions listed in the earlier tables (composite `sha256:c5b19935…`); the files
 under results/2026-11-14/ keep those pins and the gatedtrain 0.3.0 amendments' `manifest_hash`
