@@ -302,3 +302,42 @@ fails to execute). One environment difference remains: the published SFT runs us
 re-run its uid-1000 derivative (the image the published GRPO run used). Whether that or run-to-run divergence
 explains the gap was not investigated further. Results of a re-run of either stage can therefore differ from the
 published ones well beyond their intervals.
+
+## Scorer sampler-hash encoding fix (2026-11-20)
+
+`runtime/score_cad.py` wrote `sampler_hash` as the SHA-256 of compact sorted JSON (`json.dumps(..., sort_keys=True,
+separators=(",", ":"))`), while gatedtrain's `ext-collect` recomputes it as the SHA-256 of the RFC 8785 canonical JSON
+of the registered sampler (`gatedtrain.canonical.canonical_json`). The deployment sampler holds the floats
+`temperature: 0.0` and `top_p: 1.0`, which json.dumps writes as `0.0`/`1.0` and RFC 8785 as `0`/`1`, so the two
+hashes differ: `sha256:82bf58b12a9bc3e231b648db99f25b09aa43bac7e5bf1e539dffd776ef582858` (compact) against
+`sha256:9ed4c488cf016ca42124f3da32622bae9bfa1180c54afbc7544a4eef341a2223` (RFC 8785) for the vLLM sampler. An arm as
+the scorer wrote it is refused by `ext-collect` (`EXT-ARM`, "eval_meta.json sampler_hash is ..., not ...").
+`score_cad.canonical` now copies gatedtrain's RFC 8785 encoder; no score, sub-metric or other output field changes
+(the composite scorer hash, a JSON object of `sha256:<hex>` strings, encodes to the same bytes under both).
+
+The published verdicts are not affected. Every gate arm was passed through `ext-arm-fill` before collect, as this
+runtime's README prescribes ("Arms", item 8): ext-arm-fill (ptc-skel then, gatedtrain 0.3.0 now, EXT-126) converts a
+`sampler_hash` equal to the compact JSON encoding of the arm's own sampler to the RFC 8785 hash and rewrites
+`eval_meta.json` as canonical JSON. The recorded gate arms show it: the deciding arms (`arm-iou`) of all five gate
+evaluations (SFT base, two SFT candidate evaluations, GRPO base and candidate) carry `sha256:9ed4c488…` with the
+sampler written `temperature: 0`, `top_p: 1` and an `eval_meta.json` modified 2 to 72 s after the rest of the scoring
+output, while the same evaluations' `summary.json`, their `arm-valid` (supporting, not collected) and the smoke arms
+carry the scorer's `sha256:82bf58b1…`. The sampler itself was the same
+(`gen_meta.json` records `0.0` and `1.0` throughout), and the arm contents (`items.jsonl`, outputs) were not touched.
+Without the `ext-arm-fill` step, the scorer's arms would not have been collectable at all; no gate could have passed
+on a wrong sampler.
+
+The gates were scored by the scorer versions listed in the earlier tables (composite `sha256:c5b19935…`); the files
+under results/2026-11-14/ keep those pins and the gatedtrain 0.3.0 amendments' `manifest_hash`
+(`sha256:b60b904d…`, composite `sha256:6f44fcf8…`) as records. Re-pinned (only the new pin is accepted):
+
+| Pin | Reason | Before (gatedtrain 0.3.0 rename) | Now |
+|---|---|---|---|
+| `runtime/score_cad.py` | RFC 8785 `sampler_hash` | `sha256:f7215cf1cf621d46da88e6ffab6faf1bceb24d9e5a246d23e65c3f995377547b` | `sha256:9301737632efefb69fe743c620f63f6ecc8287553c5e07cc3e961bb94afb1783` |
+| scorer `code_sha256` (both evaluator rows; composite) | follows `score_cad.py` | `sha256:6f44fcf8187644e6f9e5db5c31c0bd64516eaa28ba2fa7eb39c5817c394d3e42` | `sha256:958ab45f7e79582b352052753b0794832011289cfc746b951bd5e2762b8a16e6` |
+| `cad.cadquery_items@0.1` evaluator identity (EXT-6) | follows the composite | `sha256:b60b904db58cf3a953f57401fab65827cb795d2aadaa8071d2a44da26828d6d7` | `sha256:1069caaf9c83345511f93777c3e1d381d1469235b3529ef9ec68cb3a10267a5c` |
+
+A re-judgement of the published gates with this version of the adapter would need a further version-only amendment
+(as for the renames above); the replay described in "Re-judgement under gatedtrain 0.3.0" used the previous pins.
+The real-arm test fixture carries the new scorer hashes and the RFC 8785 `sampler_hash`
+(`sha256:ba45c608…` for its `hf` sampler; before `sha256:941a33a6…`).
