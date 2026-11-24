@@ -47,12 +47,12 @@ recipe, including three superseded GRPO smokes). The deciding metric is `iou` on
 
 | Stage | Baseline | Trained (cut 60) | Gate |
 |---|---|---|---|
-| SFT: base model to SFT cut, 10 SFT families | 0.397 | 0.985 | **PASS** under the original registration: +0.588, 95% cluster-bootstrap interval [0.536, 0.637] |
-| GRPO: SFT cut to GRPO cut, 5 held-out families | 0.646 | 0.894 | **PASS** under the original registration: +0.248, 95% cluster-bootstrap interval [0.210, 0.289] |
+| SFT: base model to SFT cut, 10 SFT families | 0.397 | 0.985 | **PASS** under the original registration; **INCONCLUSIVE (post_hoc)** under the registration amended for the renames: +0.588, 95% cluster-bootstrap interval [0.536, 0.637] |
+| GRPO: SFT cut to GRPO cut, 5 held-out families | 0.646 | 0.894 | **PASS** under the original registration; **INCONCLUSIVE (post_hoc)** under the registration amended for the renames: +0.248, 95% cluster-bootstrap interval [0.210, 0.289] |
 
-The scorer changed after both gates ran (publication cleanup, hardening and renames). Re-judged with gatedtrain 0.3.0
-under the amended registrations, both gates report INCONCLUSIVE with reason `post_hoc`, with every statistic equal.
-The PASS verdicts are those of the original registrations. Training is not bit-reproducible: a re-run can differ from
+The deciding evaluator's identity covers the scorer, which changed after both gates ran (publication cleanup, executor
+hardening and renames), so the amended registrations are marked post hoc and report INCONCLUSIVE; every statistic is
+equal to the original report's. Training is not bit-reproducible: a re-run can differ from
 these numbers by more than their intervals (see "Known limitations").
 
 `RESULT.md` has the full record: the registrations, power, overlap with training, the impact queries, the
